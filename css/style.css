@@ -1,0 +1,803 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Mario-inspired color palette */
+:root {
+    --mario-red: #E52521;
+    --mario-blue: #049CD8;
+    --mario-green: #43B047;
+    --mario-yellow: #FBBC05;
+    --mario-orange: #FF9800;
+    --mario-brick: #8B4513;
+    --mario-sky: #87CEEB;
+    --mario-cloud: #FFFFFF;
+    --mario-ground: #5D4037;
+    --mario-coin: #FFD700;
+}
+
+body {
+    font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', 'Arial', sans-serif;
+    background: var(--mario-sky);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-container {
+    max-width: 1400px;
+    width: 100%;
+    background: linear-gradient(180deg, var(--mario-sky) 0%, #B0E0E6 100%);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    min-height: 750px;
+    border: 6px solid var(--mario-brick);
+    position: relative;
+}
+
+/* Cloud decorations */
+.game-container::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    width: 80px;
+    height: 40px;
+    background: white;
+    border-radius: 50px;
+    box-shadow: 20px 10px 0 white, 40px -5px 0 white;
+    opacity: 0.8;
+}
+
+.game-container::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 60px;
+    width: 60px;
+    height: 30px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 15px 8px 0 white, 30px -3px 0 white;
+    opacity: 0.7;
+}
+
+.screen {
+    display: none;
+    padding: 30px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.game-title {
+    text-align: center;
+    color: var(--mario-red);
+    font-size: 3.2rem;
+    margin-bottom: 30px;
+    text-shadow: 3px 3px 0 var(--mario-yellow), -1px -1px 0 white;
+    letter-spacing: 1px;
+}
+
+.game-title-small {
+    color: var(--mario-red);
+    font-size: 1.6rem;
+    margin: 0;
+    text-shadow: 2px 2px 0 white;
+}
+
+.setup-content {
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.player-count h2,
+.player-setup-form h2 {
+    text-align: center;
+    color: var(--mario-blue);
+    margin-bottom: 20px;
+    font-size: 1.7rem;
+    text-shadow: 1px 1px 0 white;
+}
+
+.player-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.player-btn {
+    padding: 15px 35px;
+    font-size: 1.3rem;
+    border: 4px solid var(--mario-brick);
+    border-radius: 10px;
+    background: linear-gradient(180deg, var(--mario-blue) 0%, #0066AA 100%);
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 0 var(--mario-brick);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.player-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--mario-brick);
+}
+
+.player-btn.selected {
+    background: linear-gradient(180deg, var(--mario-red) 0%, #CC0000 100%);
+}
+
+.player-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--mario-brick);
+}
+
+.hidden {
+    display: none !important;
+}
+
+#player-inputs {
+    margin-bottom: 20px;
+}
+
+.player-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border: 4px solid var(--mario-brick);
+    box-shadow: 0 4px 0 var(--mario-brick);
+}
+
+.player-label {
+    font-size: 1.2rem;
+    color: var(--mario-blue);
+    width: 100px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.prop-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+}
+
+.prop-option {
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: transform 0.2s, background 0.2s;
+    background: #F5F5F5;
+    border: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prop-option:hover {
+    transform: scale(1.15);
+    background: var(--mario-yellow);
+}
+
+.prop-option.selected {
+    background: linear-gradient(180deg, var(--mario-yellow) 0%, #FFA000 100%);
+    transform: scale(1.2);
+    border: 3px solid var(--mario-orange);
+    box-shadow: 0 3px 0 var(--mario-orange);
+}
+
+.name-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 3px solid var(--mario-brick);
+    border-radius: 8px;
+    font-family: inherit;
+    width: 120px;
+    background: white;
+    transition: border-color 0.3s;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: var(--mario-blue);
+}
+
+.action-btn {
+    display: block;
+    margin: 25px auto;
+    padding: 16px 45px;
+    font-size: 1.4rem;
+    border: 4px solid var(--mario-brick);
+    border-radius: 10px;
+    background: linear-gradient(180deg, var(--mario-green) 0%, #2E7D32 100%);
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 0 var(--mario-brick);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--mario-brick);
+}
+
+.action-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--mario-brick);
+}
+
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 18px 22px;
+    background: linear-gradient(180deg, #8B4513 0%, #6D4C41 100%);
+    border-radius: 10px;
+    border: 4px solid var(--mario-brick);
+    box-shadow: 0 4px 0 var(--mario-brick);
+}
+
+.end-btn {
+    padding: 10px 22px;
+    font-size: 1rem;
+    border: 3px solid var(--mario-brick);
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--mario-red) 0%, #CC0000 100%);
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: transform 0.2s;
+    box-shadow: 0 3px 0 var(--mario-brick);
+}
+
+.end-btn:hover {
+    transform: translateY(-2px);
+}
+
+.end-btn:active {
+    transform: translateY(2px);
+}
+
+.game-content {
+    display: flex;
+    gap: 25px;
+}
+
+.players-sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.player-card {
+    background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
+    padding: 18px;
+    border-radius: 10px;
+    border: 4px solid var(--mario-brick);
+    transition: border-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 0 var(--mario-brick);
+}
+
+.player-card.active {
+    border-color: var(--mario-red);
+    transform: scale(1.03);
+    background: linear-gradient(180deg, #FFEBEE 0%, #FFCDD2 100%);
+}
+
+.player-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-emoji {
+    font-size: 2.3rem;
+}
+
+.player-name {
+    font-size: 1.2rem;
+    color: var(--mario-blue);
+    font-weight: bold;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.player-score {
+    font-size: 1.6rem;
+    color: var(--mario-orange);
+    text-align: right;
+    font-weight: bold;
+}
+
+.player-score-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: normal;
+}
+
+.round-info {
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--mario-blue);
+    font-weight: bold;
+    padding: 18px;
+    background: linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%);
+    border-radius: 10px;
+    border: 4px solid var(--mario-brick);
+    box-shadow: 0 4px 0 var(--mario-brick);
+}
+
+.board-container {
+    flex: 2.5;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Game board styling */
+.game-board-wrapper {
+    position: relative;
+    background: linear-gradient(180deg, #5D4037 0%, #4E342E 100%);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 6px 0 #3E2723;
+    border: 4px solid #3E2723;
+}
+
+.game-board {
+    height: 550px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #87CEEB 0%, #98FB98 40%, #FFD700 70%, #FF6B6B 100%);
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+.board-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+    position: relative;
+    transition: background 0.2s;
+    z-index: 3;
+}
+
+.board-cell:last-child {
+    border-bottom: none;
+}
+
+.board-cell.highlighted {
+    background: rgba(255, 215, 0, 0.5) !important;
+    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.5);
+    animation: cell-flash 0.3s ease-in-out;
+}
+
+@keyframes cell-flash {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.cell-label {
+    font-size: 1.6rem;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    left: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.letter-display {
+    font-size: 2.2rem;
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.letter-display.visible {
+    opacity: 1;
+}
+
+.result-points {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--mario-coin);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    animation: pop-in 0.4s ease-out;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes pop-in {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    70% { transform: translate(-50%, -50%) scale(1.4); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Slide zone */
+.slide-zone {
+    background: linear-gradient(180deg, #8B4513 0%, #6D4C41 100%);
+    padding: 22px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    border: 4px solid #5D4037;
+    box-shadow: 0 6px 0 #3E2723;
+    position: relative;
+}
+
+.prop {
+    font-size: 4rem;
+    transition: transform 0.1s;
+    cursor: grab;
+    z-index: 10;
+    position: relative;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.prop:active {
+    cursor: grabbing;
+}
+
+.slide-btn {
+    margin: 0;
+    padding: 16px 38px;
+    font-size: 1.3rem;
+    background: linear-gradient(180deg, var(--mario-red) 0%, #CC0000 100%);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
+    padding: 45px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 5px solid var(--mario-brick);
+}
+
+.modal-title {
+    color: var(--mario-blue);
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+}
+
+.modal-letter {
+    font-size: 5.5rem;
+    color: var(--mario-red);
+    margin: 18px 0;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+    background: white;
+    padding: 18px 36px;
+    border-radius: 15px;
+    border: 4px solid var(--mario-brick);
+    box-shadow: 0 6px 0 var(--mario-brick);
+}
+
+.modal-points {
+    color: var(--mario-orange);
+    font-size: 1.4rem;
+    margin-bottom: 22px;
+    font-weight: bold;
+}
+
+.word-input-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+#word-input {
+    padding: 14px 18px;
+    font-size: 1.4rem;
+    border: 3px solid var(--mario-brick);
+    border-radius: 10px;
+    font-family: inherit;
+    width: 200px;
+    text-align: center;
+    background: white;
+    transition: border-color 0.3s;
+}
+
+#word-input:focus {
+    outline: none;
+    border-color: var(--mario-blue);
+}
+
+#submit-word-btn {
+    margin: 0;
+    padding: 14px 28px;
+    font-size: 1.2rem;
+}
+
+.feedback {
+    font-size: 1.3rem;
+    font-weight: bold;
+    min-height: 30px;
+}
+
+.feedback.correct {
+    color: var(--mario-green);
+}
+
+.feedback.incorrect {
+    color: var(--mario-red);
+}
+
+.feedback.neutral {
+    color: var(--mario-orange);
+}
+
+/* End screen */
+.winner-announcement {
+    text-align: center;
+    padding: 35px;
+    background: linear-gradient(180deg, var(--mario-yellow) 0%, #FFA000 100%);
+    border-radius: 15px;
+    margin-bottom: 22px;
+    border: 5px solid var(--mario-orange);
+    box-shadow: 0 8px 0 var(--mario-brick);
+}
+
+.winner-announcement h2 {
+    color: var(--mario-brick);
+    font-size: 2.2rem;
+    margin-bottom: 18px;
+    text-shadow: 1px 1px 0 white;
+}
+
+.winner-emoji {
+    font-size: 5rem;
+    animation: winner-bounce 0.6s ease-in-out infinite;
+}
+
+@keyframes winner-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(-3deg); }
+    75% { transform: translateY(-8px) rotate(3deg); }
+}
+
+.final-scores {
+    margin-bottom: 28px;
+}
+
+.final-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    margin-bottom: 10px;
+    background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
+    border-radius: 10px;
+    border: 4px solid var(--mario-brick);
+}
+
+.final-score-row.winner {
+    background: linear-gradient(180deg, var(--mario-yellow) 0%, #FFA000 100%);
+    border-color: var(--mario-orange);
+}
+
+.final-score-name {
+    font-size: 1.3rem;
+    color: var(--mario-blue);
+    font-weight: bold;
+    word-break: break-word;
+}
+
+.final-score-row.winner .final-score-name {
+    color: var(--mario-brick);
+}
+
+.final-score-value {
+    font-size: 1.6rem;
+    color: var(--mario-orange);
+    font-weight: bold;
+}
+
+.final-score-row.winner .final-score-value {
+    color: var(--mario-brick);
+}
+
+#play-again-btn {
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--mario-green) 0%, #2E7D32 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.2rem;
+    }
+
+    .game-container {
+        min-height: 650px;
+    }
+
+    .game-content {
+        flex-direction: column;
+    }
+
+    .players-sidebar {
+        order: 2;
+    }
+
+    .board-container {
+        order: 1;
+    }
+
+    .game-board {
+        height: 380px;
+    }
+
+    .game-board-wrapper {
+        padding: 8px;
+    }
+
+    .cell-label {
+        font-size: 1.1rem;
+        left: 12px;
+    }
+
+    .letter-display {
+        font-size: 1.6rem;
+        padding: 6px 12px;
+    }
+
+    .prop {
+        font-size: 3rem;
+    }
+
+    .slide-zone {
+        padding: 18px;
+    }
+
+    .player-input-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .player-label {
+        width: auto;
+    }
+
+    .name-input {
+        width: 100%;
+    }
+
+    .word-input-container {
+        flex-direction: column;
+    }
+
+    #word-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        min-height: 550px;
+    }
+
+    .screen {
+        padding: 15px;
+    }
+
+    .game-title {
+        font-size: 1.8rem;
+    }
+
+    .player-buttons {
+        flex-direction: column;
+    }
+
+    .player-btn {
+        width: 100%;
+    }
+
+    .prop-selector {
+        justify-content: center;
+    }
+
+    .prop-option {
+        font-size: 1.8rem;
+        padding: 6px;
+    }
+
+    .modal-content {
+        padding: 25px;
+    }
+
+    .modal-letter {
+        font-size: 3.5rem;
+        padding: 14px 24px;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-points {
+        font-size: 1.1rem;
+    }
+
+    .prop {
+        font-size: 2.5rem;
+    }
+
+    .game-board {
+        height: 320px;
+    }
+
+    .winner-announcement h2 {
+        font-size: 1.6rem;
+    }
+
+    .winner-emoji {
+        font-size: 3.5rem;
+    }
+
+    .final-score-name,
+    .final-score-value {
+        font-size: 1.1rem;
+    }
+}

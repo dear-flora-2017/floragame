@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Slide Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Player Selection Screen -->
+        <div id="setup-screen" class="screen active">
+            <h1 class="game-title">🎮 Word Slide Game 🎮</h1>
+            <div class="setup-content">
+                <div class="player-count">
+                    <h2>👥 How many players?</h2>
+                    <div class="player-buttons">
+                        <button class="player-btn" data-count="2">2 Players</button>
+                        <button class="player-btn" data-count="3">3 Players</button>
+                        <button class="player-btn" data-count="4">4 Players</button>
+                    </div>
+                </div>
+                <div id="player-setup-form" class="hidden">
+                    <h2>🎁 Choose your props!</h2>
+                    <div id="player-inputs"></div>
+                    <button id="start-btn" class="action-btn">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <h2 class="game-title-small">🎮 Word Slide Game 🎮</h2>
+                <button id="end-game-btn" class="end-btn">End Game</button>
+            </div>
+            <div class="game-content">
+                <!-- Player Cards Sidebar -->
+                <div class="players-sidebar">
+                    <div id="players-container"></div>
+                    <div class="round-info">
+                        <span>🏁 Round: </span>
+                        <span id="round-number">1</span>
+                    </div>
+                </div>
+
+                <!-- Game Board -->
+                <div class="board-container">
+                    <div class="game-board-wrapper">
+                        <div id="game-board" class="game-board">
+                            <div class="board-cell" data-index="0" data-points="5" style="height: 20%;">
+                                <span class="cell-label">5</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="1" data-points="10" style="height: 15%;">
+                                <span class="cell-label">10</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="2" data-points="20" style="height: 12%;">
+                                <span class="cell-label">20</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="3" data-points="30" style="height: 10%;">
+                                <span class="cell-label">30</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="4" data-points="40" style="height: 10%;">
+                                <span class="cell-label">40</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="5" data-points="50" style="height: 8%;">
+                                <span class="cell-label">50</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="6" data-points="75" style="height: 10%;">
+                                <span class="cell-label">75</span>
+                                <span class="letter-display"></span>
+                            </div>
+                            <div class="board-cell" data-index="7" data-points="100" style="height: 15%;">
+                                <span class="cell-label">100</span>
+                                <span class="letter-display"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Starting platform -->
+                    <div class="slide-zone">
+                        <div id="prop" class="prop">🦊</div>
+                        <button id="slide-btn" class="action-btn slide-btn">Slide! 🚀</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Input Modal -->
+        <div id="word-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 class="modal-title">Your Letter is:</h3>
+                <div id="modal-letter" class="modal-letter">A</div>
+                <p class="modal-points">Points: <span id="modal-points">10</span></p>
+                <div class="word-input-container">
+                    <input type="text" id="word-input" placeholder="Type a word..." autocomplete="off">
+                    <button id="submit-word-btn" class="action-btn">Submit</button>
+                </div>
+                <div id="word-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Game End Screen -->
+        <div id="end-screen" class="screen">
+            <h1 class="game-title">🎊 Game Over! 🎊</h1>
+            <div id="winner-announcement" class="winner-announcement">
+                <h2>🏆 Winner: <span id="winner-name"></span> 🎉</h2>
+                <div id="winner-emoji" class="winner-emoji"></div>
+            </div>
+            <div id="final-scores" class="final-scores"></div>
+            <button id="play-again-btn" class="action-btn">Play Again 🎮</button>
+        </div>
+    </div>
+
+    <script src="js/word-list.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

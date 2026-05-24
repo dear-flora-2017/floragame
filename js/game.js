@@ -208,8 +208,9 @@ function animateWithGravity(prop) {
         targetSlideDistance += boardCells[i].offsetHeight;
     }
 
-    // 减去道具高度，确保道具顶部落在目标格子底部，而不是底部落在那里
-    const slideDistance = targetSlideDistance - prop.offsetHeight;
+    // 计算滑动距离，确保道具始终向上滑动
+    // 道具越高（index 越小），滑动距离越大
+    const slideDistance = Math.max(10, prop.offsetHeight - targetSlideDistance);
 
     let progress = 0;
     const duration = 1500;

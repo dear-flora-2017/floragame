@@ -198,12 +198,17 @@ function animateWithGravity(prop) {
     const gameBoard = document.getElementById('game-board');
 
     const originalCellHTMLs = Array.from(boardCells).map(cell => cell.innerHTML);
-    let finalCellIdx = -1;
 
     boardCells.forEach(cell => cell.classList.remove('highlighted'));
 
-    const boardHeight = gameBoard.offsetHeight;
-    const slideDistance = 100 + Math.random() * (boardHeight + 100);
+    // 预先计算目标格子和滑动距离
+    const targetCellIdx = Math.floor(Math.random() * boardCells.length);
+    let targetSlideDistance = 0;
+    for (let i = 0; i <= targetCellIdx; i++) {
+        targetSlideDistance += boardCells[i].offsetHeight;
+    }
+
+    const slideDistance = targetSlideDistance;
 
     let progress = 0;
     const duration = 1500;
@@ -246,26 +251,11 @@ function animateWithGravity(prop) {
                 prop.style.transform = `translateY(${currentY}px) scale(1) rotate(360deg)`;
 
                 setTimeout(() => {
-                    const propRect = prop.getBoundingClientRect();
-                    const boardRect = gameBoard.getBoundingClientRect();
-                    const finalBoardPosition = propRect.bottom - boardRect.top;
-
-                    let finalIdx = 0;
-                    let top = 0;
-                    for (let i = 0; i < boardCells.length; i++) {
-                        const height = boardCells[i].offsetHeight;
-                        if (finalBoardPosition >= top && finalBoardPosition < top + height) {
-                            finalIdx = i;
-                            break;
-                        }
-                        top += height;
-                    }
-
-                    const points = parseInt(boardCells[finalIdx].dataset.points);
-                    const cell = boardCells[finalIdx];
+                    const points = parseInt(boardCells[targetCellIdx].dataset.points);
+                    const cell = boardCells[targetCellIdx];
 
                     boardCells.forEach((c, idx) => {
-                        c.classList.toggle('highlighted', idx === finalIdx);
+                        c.classList.toggle('highlighted', idx === targetCellIdx);
                     });
 
                     cell.innerHTML = `<span class="cell-label">${cell.dataset.points}</span><span class="result-points">+${points}!</span>`;
@@ -273,9 +263,9 @@ function animateWithGravity(prop) {
                     setTimeout(() => {
                         boardCells.forEach((c, idx) => {
                             c.innerHTML = originalCellHTMLs[idx];
-                            c.classList.toggle('highlighted', idx === finalIdx);
+                            c.classList.toggle('highlighted', idx === targetCellIdx);
                         });
-                        showWordModal(points, finalIdx);
+                        showWordModal(points, targetCellIdx);
                     }, 2500);
                 }, 50);
             }, 150);
